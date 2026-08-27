@@ -4,7 +4,7 @@ import WeatherHomeView from '@/views/WeatherHomeView.vue'
 const validCityIds = new Set(['city_01', 'city_02', 'city_03', 'city_04', 'city_05'])
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
