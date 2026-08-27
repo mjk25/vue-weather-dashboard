@@ -1,3 +1,4 @@
+
 # vue-weather-dashboard
 
 ### P108 김민주
@@ -16,7 +17,12 @@
 - About / FAQ 정적 페이지
 
 메인 화면과 상세 화면 모두 OpenWeatherMap API에서 실시간 날씨를 가져옵니다.
-<img width="400" alt="스크린샷 2026-08-27 오후 4 59 25" src="https://github.com/user-attachments/assets/caca3880-594a-45a2-acd7-82e5febe9508" />
+
+#### 메인 화면 with 날씨
+<img width="500" alt="스크린샷 2026-08-27 오후 4 59 25" src="https://github.com/user-attachments/assets/caca3880-594a-45a2-acd7-82e5febe9508" />
+
+#### 상세 화면 with 날씨 & 지도
+<img width="500" alt="스크린샷 2026-08-27 오후 5 05 36" src="https://github.com/user-attachments/assets/68ae6df5-dfe3-4c1e-a51c-105d9eaee4c1" />
 
 ## 기술 스택
 
