@@ -33,6 +33,8 @@ OpenWeatherMap API 키가 필요합니다. 프로젝트 루트에 `.env` 파일�
 VITE_OPENWEATHER_API_KEY=발급받은_키
 ```
 
+`.env`는 `.gitignore`에 등록되어 Git에 올라가지 않습니다. API 키 같은 값은 이 파일로만 관리합니다.
+
 ## 실행
 
 ```sh
@@ -41,6 +43,18 @@ npm run build      # 타입 체크 + 프로덕션 빌드
 npm run lint       # oxlint + eslint
 npm run deploy     # 빌드 후 gh-pages로 GitHub Pages 배포
 ```
+
+## 코드 품질 관리
+
+- ESLint(+ oxlint)로 제출 과제를 점검하여 Error를 확인했습니다. `npm run lint`로 실행하며, `--fix` 옵션이 걸려 있어 자동 수정 가능한 항목은 함께 정리됩니다.
+- API 키는 `.env`(Git 미포함) 환경 변수로만 관리하여 저장소에 업로드되지 않도록 했습니다.
+
+## 빌드 & 배포
+
+1. `npm run build`로 프로젝트를 빌드하면 `dist/`에 정적 파일이 생성됩니다.
+2. `dist/` 정적 파일을 서버(GitHub Pages)에 호스팅한 뒤 브라우저에서 동작을 확인합니다.
+   - `npm run deploy`가 빌드 → `index.html`을 `404.html`로 복사(SPA 라우팅 대응) → `gh-pages` 브랜치 배포까지 수행합니다.
+   - 배포 URL: `https://mjk25.github.io/vue-weather-dashboard/`
 
 ## 구조
 

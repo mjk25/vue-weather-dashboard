@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "deploy": "npm run build && cp dist/index.html dist/404.html && gh-pages -d dist",
     "build-only": "vite build",
+    "//build:staging": "[연습용/비활성] vite build --mode staging",
     "type-check": "vue-tsc --build",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
