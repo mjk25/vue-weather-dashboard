@@ -9,17 +9,17 @@
 ## 기능
 
 - **지역별 현재 날씨**: 서울, 수원, 부산, 제주, 강릉 5개 도시의 기온, 날씨, 습도를 카드로 표시
-- **전체 지역 평균 기온**: 조회에 성공한 도시들의 평균 기온을 검색 카드 상단에 함께 표시
+- **전체 지역 평균 기온**: 조회에 성공한 도시들의 평균 기온을 검색 카드 제목 옆에 표시. 마우스를 올리면 평균에 포함된 도시와 각 도시의 기온을 팝오버로 보여줌
 - **도시 검색**: 입력한 도시명으로 카드 목록 필터링
 - **상세 화면**: 카드에서 상세보기를 누르면 `/weather/:cityId`로 이동 (등록되지 않은 ID는 404 처리)
-- **섭씨/화씨 전환**: 상단 버튼으로 단위를 바꾸면 모든 화면의 기온 표시가 함께 바뀜 (Pinia로 상태 공유)
+- **섭씨/화씨 전환**: 상단 버튼으로 단위를 바꾸면 모든 화면의 기온 표시가 함께 바뀜 (Pinia로 상태 공유). 버튼에는 Element Plus 툴팁 안내가 붙음
 - About / FAQ 정적 페이지
 
 메인 화면 날씨는 OpenWeatherMap API에서 실시간으로 가져오고, 상세 화면은 아직 목업 데이터를 사용합니다.
 
 ## 기술 스택
 
-Vue 3, Vue Router, Pinia, Axios, Vite, TypeScript
+Vue 3, Vue Router, Pinia, Axios, Element Plus, Vite, TypeScript
 
 ## 설정
 
@@ -39,6 +39,7 @@ VITE_OPENWEATHER_API_KEY=발급받은_키
 npm run dev        # 개발 서버
 npm run build      # 타입 체크 + 프로덕션 빌드
 npm run lint       # oxlint + eslint
+npm run deploy     # 빌드 후 gh-pages로 GitHub Pages 배포
 ```
 
 ## 구조
@@ -111,3 +112,10 @@ src/
 
 - `v-for` + `:key`, `v-if / v-else`로 목록·조건 렌더 (FAQ 아코디언, 검색 결과 없음 처리).
 - `@click.stop`으로 카드 클릭과 상세보기 버튼 클릭의 이벤트 버블링 분리 (`WeatherCard`).
+
+### UI 라이브러리 (Element Plus)
+
+- `main.ts`에서 `app.use(ElementPlus)`로 전역 등록하고 CSS를 import하면 컴포넌트를 별도 import 없이 템플릿에서 바로 쓸 수 있다.
+- `el-tooltip` — 단위 변경 버튼에 설명 툴팁 (`UnitToggler`).
+- `el-popover` + `#reference` 슬롯 — 평균 기온 박스에 마우스를 올리면 평균에 포함된 도시 목록을 띄운다 (`WeatherHomeView`).
+- 직접 만든 슬롯/이벤트 패턴 위에 필요한 부분만 골라 얹는 식으로 도입.
