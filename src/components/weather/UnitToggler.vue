@@ -7,7 +7,9 @@ const configStore = useConfigStore()
   <div>
     <span>현재 단위: {{ configStore.unitSymbol }}</span>
 
-    <button @click="configStore.toggleUnit">단위 변경</button>
+    <el-tooltip content="섭씨(℃) ↔ 화씨(℉)를 전환합니다" placement="bottom">
+      <button @click="configStore.toggleUnit">단위 변경</button>
+    </el-tooltip>
   </div>
 </template>
 

@@ -81,13 +81,24 @@ watchEffect(() => {
       <template #title>
         <div class="search-title">
           <h2>도시 검색</h2>
-          <div class="region-average">
-            <span class="region-average__label">전체 지역 평균 기온</span>
-            <strong class="region-average__value">
-              <template v-if="loadedCities.length > 0">{{ averageTemp }}{{ averageUnit }}</template>
-              <template v-else>--</template>
-            </strong>
-          </div>
+          <el-popover placement="bottom" :width="220" trigger="hover">
+            <template #reference>
+              <div class="region-average">
+                <span class="region-average__label">전체 지역 평균 기온</span>
+                <strong class="region-average__value">
+                  <template v-if="loadedCities.length > 0"
+                    >{{ averageTemp }}{{ averageUnit }}</template
+                  >
+                  <template v-else>--</template>
+                </strong>
+              </div>
+            </template>
+            <p class="region-average__popover-title">평균에 포함된 도시</p>
+            <ul class="region-average__popover-list">
+              <li v-for="city in loadedCities" :key="city.id">{{ city.name }} · {{ city.temp }}℃</li>
+              <li v-if="loadedCities.length === 0">아직 불러온 도시가 없습니다.</li>
+            </ul>
+          </el-popover>
         </div>
       </template>
       <SearchBar :current-query="searchQuery" @update-query="(value) => (searchQuery = value)" />
@@ -174,5 +185,17 @@ watchEffect(() => {
 .region-average__value {
   font-size: 1.1em;
   color: #303133;
+}
+
+.region-average__popover-title {
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.region-average__popover-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #606266;
 }
 </style>
