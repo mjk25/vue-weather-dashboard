@@ -37,3 +37,16 @@ onMounted(() => {
     <button @click="router.push('/')">홈으로 돌아가기</button>
   </section>
 </template>
+
+<style scoped>
+button {
+  margin-top: 20px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: white;
+  cursor: pointer;
+}
+</style>
