@@ -19,23 +19,23 @@ const { displayTemp, unitSymbol } = useTemperature(() => props.cityItem.temp)
     @click="emit('select-card', props.cityItem.id, `${props.cityItem.name}이 선택되었습니다.`)"
   >
     <h3>{{ props.cityItem.name }}</h3>
-    <p>현재 기온: {{ props.cityItem.temp }}℃</p>
+    <p>현재 기온: {{ displayTemp }}{{ unitSymbol }}</p>
     <p>날씨: {{ props.cityItem.status }}</p>
     <p v-if="props.cityItem.humidity">습도: {{ props.cityItem.humidity }}%</p>
 
     <span v-if="props.cityItem.temp >= 25" class="badge badge--hot">🔥 더움 (25도 이상)</span>
     <span v-else class="badge badge--cool">❄️ 선선함 (25도 미만)</span>
 
-    <button @click.stop="emit('click-detail', props.cityItem.name, props.cityItem.status)">
-      상세보기
-    </button>
+    <button @click.stop="emit('click-detail', props.cityItem.id)">상세보기</button>
   </article>
 </template>
 
 <style scoped>
 .weather-card {
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .weather-card:hover {

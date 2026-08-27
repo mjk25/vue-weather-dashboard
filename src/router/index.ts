@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import WeatherHomeView from '@/views/WeatherHomeView.vue'
 
-const validCityIds = new Set(['city_01', 'city_02', 'city_03'])
+const validCityIds = new Set(['city_01', 'city_02', 'city_03', 'city_04', 'city_05'])
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +20,11 @@ const router = createRouter({
       path: '/weather/:cityId',
       name: 'WeatherDetail',
       component: () => import('@/views/WeatherDetailView.vue'),
+    },
+    {
+      path: '/faq',
+      name: 'WeatherFaq',
+      component: () => import('@/views/WeatherFaqView.vue'),
     },
     {
       path: '/not-found',
