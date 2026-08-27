@@ -16,6 +16,9 @@
 - About / FAQ 정적 페이지
 
 메인 화면 날씨는 OpenWeatherMap API에서 실시간으로 가져오고, 상세 화면은 아직 목업 데이터를 사용합니다.
+<img width="960" height="962" alt="스크린샷 2026-08-27 오후 4 59 25" src="https://github.com/user-attachments/assets/caca3880-594a-45a2-acd7-82e5febe9508" />
+
+
 
 ## 기술 스택
 
