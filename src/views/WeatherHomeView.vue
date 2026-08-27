@@ -6,21 +6,13 @@ import SearchBar from '@/components/weather/SearchBar.vue'
 import WeatherCard from '@/components/weather/WeatherCard.vue'
 import { fetchCurrentWeather } from '@/services/weatherApi'
 import { useTemperature } from '@/composables/useTemperature'
+import { cityMeta } from '@/data/cities'
 
 const router = useRouter()
 
 function goDetail(cityId) {
   router.push({ name: 'WeatherDetail', params: { cityId } })
 }
-
-// OpenWeatherMap 조회용 영문 도시명과 화면 표시용 정보
-const cityMeta = [
-  { id: 'city_01', name: '서울', query: 'Seoul,KR' },
-  { id: 'city_02', name: '수원', query: 'Suwon,KR' },
-  { id: 'city_03', name: '부산', query: 'Busan,KR' },
-  { id: 'city_04', name: '제주', query: 'Jeju,KR' },
-  { id: 'city_05', name: '강릉', query: 'Gangneung,KR' },
-]
 
 const weatherList = ref(
   cityMeta.map(({ id, name }) => ({ id, name, temp: 0, status: '불러오는 중...' })),

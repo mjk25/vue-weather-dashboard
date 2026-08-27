@@ -19,5 +19,8 @@ export async function fetchCurrentWeather(cityQuery) {
     temp: Math.round(data.main.temp),
     status: data.weather[0].description,
     humidity: data.main.humidity,
+    wind: data.wind.speed,
+    lat: data.coord.lat,
+    lon: data.coord.lon,
   }
 }

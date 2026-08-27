@@ -11,14 +11,12 @@
 - **지역별 현재 날씨**: 서울, 수원, 부산, 제주, 강릉 5개 도시의 기온, 날씨, 습도를 카드로 표시
 - **전체 지역 평균 기온**: 조회에 성공한 도시들의 평균 기온을 검색 카드 제목 옆에 표시. 마우스를 올리면 평균에 포함된 도시와 각 도시의 기온을 팝오버로 보여줌
 - **도시 검색**: 입력한 도시명으로 카드 목록 필터링
-- **상세 화면**: 카드에서 상세보기를 누르면 `/weather/:cityId`로 이동 (등록되지 않은 ID는 404 처리)
+- **상세 화면**: 카드에서 상세보기를 누르면 `/weather/:cityId`로 이동. 해당 도시의 기온·날씨·습도·풍속을 OpenWeatherMap에서 조회해 표시하고, 옆에 위치를 OpenStreetMap 지도로 함께 보여줌 (등록되지 않은 ID는 404 처리)
 - **섭씨/화씨 전환**: 상단 버튼으로 단위를 바꾸면 모든 화면의 기온 표시가 함께 바뀜 (Pinia로 상태 공유). 버튼에는 Element Plus 툴팁 안내가 붙음
 - About / FAQ 정적 페이지
 
-메인 화면 날씨는 OpenWeatherMap API에서 실시간으로 가져오고, 상세 화면은 아직 목업 데이터를 사용합니다.
-<img width="960" height="962" alt="스크린샷 2026-08-27 오후 4 59 25" src="https://github.com/user-attachments/assets/caca3880-594a-45a2-acd7-82e5febe9508" />
-
-
+메인 화면과 상세 화면 모두 OpenWeatherMap API에서 실시간 날씨를 가져옵니다.
+<img width="400" alt="스크린샷 2026-08-27 오후 4 59 25" src="https://github.com/user-attachments/assets/caca3880-594a-45a2-acd7-82e5febe9508" />
 
 ## 기술 스택
 
@@ -65,6 +63,7 @@ npm run deploy     # 빌드 후 gh-pages로 GitHub Pages 배포
 src/
 ├── components/weather/   # SearchBar, WeatherCard, BaseDashboardCard, UnitToggler
 ├── composables/          # useTemperature - 단위 설정에 맞춘 기온 변환
+├── data/                 # cities - 도시 메타(id·이름·조회명) 공유
 ├── services/             # weatherApi - OpenWeatherMap 호출
 ├── stores/               # configStore - 온도 단위 상태
 ├── router/               # 라우트 정의, cityId 유효성 가드
@@ -91,7 +90,8 @@ src/
 ### 생명주기 (`onMounted`)
 
 - API 호출은 `onMounted` 안에서 실행. DOM에 마운트된 뒤 실행되므로 초기 렌더를 막지 않고, `weatherList.value[index]`를 나중에 채워 넣으면 반응형으로 화면이 갱신된다 (메인 날씨 조회).
-- 상세 화면에서도 `onMounted`에서 `route.params.cityId`를 읽어 목업 데이터를 채운다.
+- 상세 화면도 `onMounted`에서 `route.params.cityId` → `findCityById`로 조회명을 찾아 `fetchCurrentWeather`를 호출하고, `loading` / `errorMessage` 상태로 로딩·실패를 구분해 렌더한다.
+- 상세 화면의 지도는 API 응답의 `coord`(위경도)로 OpenStreetMap 임베드 URL을 `computed`로 만들어 `<iframe>`에 넣는다. 링크만으로는 지도가 안 뜨고, 키가 필요 없는 OSM `export/embed.html`을 iframe으로 띄우는 방식.
 
 ### 컴포저블 (`useTemperature`)
 

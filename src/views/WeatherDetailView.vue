@@ -1,44 +1,117 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTemperature } from '@/composables/useTemperature'
+import { findCityById } from '@/data/cities'
+import { fetchCurrentWeather } from '@/services/weatherApi'
 
 const route = useRoute()
 const router = useRouter()
+
 const cityData = ref(null)
+const loading = ref(true)
+const errorMessage = ref('')
 
 // cityData가 로딩되기 전에도 안전하게 0을 넘기고, 로딩 후 실제 섭씨 값을 전달합니다.
 const { displayTemp, unitSymbol } = useTemperature(() => cityData.value?.temp ?? 0)
 
-const mockDetails = {
-  city_01: { name: '서울', temp: 28, status: '맑음', humidity: 55, wind: 2.5 },
-  city_02: { name: '수원', temp: 24, status: '비', humidity: 85, wind: 4.1 },
-  city_03: { name: '부산', temp: 26, status: '구름', humidity: 65, wind: 5.0 },
-  city_04: { name: '제주', temp: 30, status: '맑음', humidity: 70, wind: 3.2 },
-  city_05: { name: '강릉', temp: 22, status: '흐림', humidity: 60, wind: 2.8 },
-}
+// OpenStreetMap 임베드 URL. 좌표 주변으로 작은 bbox를 만들고 마커를 찍습니다.
+const mapSrc = computed(() => {
+  if (!cityData.value) return ''
+  const { lat, lon } = cityData.value
+  const d = 0.05
+  const bbox = [lon - d, lat - d, lon + d, lat + d].join(',')
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`
+})
 
-// 컴포넌트가 화면에 연결된 뒤 URL의 cityId를 읽습니다.
-onMounted(() => {
-  cityData.value = mockDetails[String(route.params.cityId)] ?? null
+const mapLink = computed(() => {
+  if (!cityData.value) return ''
+  const { lat, lon } = cityData.value
+  return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=12/${lat}/${lon}`
+})
+
+// 마운트 시점에 URL의 cityId로 실제 날씨를 조회합니다.
+onMounted(async () => {
+  const city = findCityById(String(route.params.cityId))
+  if (!city) {
+    errorMessage.value = '등록되지 않은 도시입니다.'
+    loading.value = false
+    return
+  }
+
+  try {
+    const weather = await fetchCurrentWeather(city.query)
+    cityData.value = { name: city.name, ...weather }
+  } catch (error) {
+    console.error(`${city.name} 상세 날씨 조회 실패:`, error)
+    errorMessage.value = '날씨 정보를 불러오지 못했습니다.'
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
 <template>
   <section>
     <h2>상세 날씨</h2>
-    <div v-if="cityData">
-      <h3>{{ cityData.name }}</h3>
-      <p>기온: {{ displayTemp }}{{ unitSymbol }}</p>
-      <p>날씨: {{ cityData.status }}</p>
-      <p>습도: {{ cityData.humidity }}%</p>
-      <p>풍속: {{ cityData.wind }}m/s</p>
+
+    <p v-if="loading">불러오는 중...</p>
+    <p v-else-if="errorMessage">{{ errorMessage }}</p>
+    <div v-else-if="cityData" class="detail-body">
+      <div class="detail-info">
+        <h3>{{ cityData.name }}</h3>
+        <p>기온: {{ displayTemp }}{{ unitSymbol }}</p>
+        <p>날씨: {{ cityData.status }}</p>
+        <p>습도: {{ cityData.humidity }}%</p>
+        <p>풍속: {{ cityData.wind }}m/s</p>
+      </div>
+
+      <div class="detail-map">
+        <iframe
+          :src="mapSrc"
+          title="위치 지도"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+        <a :href="mapLink" target="_blank" rel="noopener">큰 지도 보기 ↗</a>
+      </div>
     </div>
+
     <button @click="router.push('/')">홈으로 돌아가기</button>
   </section>
 </template>
 
 <style scoped>
+.detail-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.detail-info {
+  flex: 1 1 200px;
+}
+
+.detail-map {
+  flex: 1 1 320px;
+  max-width: 480px;
+}
+
+.detail-map iframe {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+}
+
+.detail-map a {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #409eff;
+}
+
 button {
   margin-top: 20px;
   padding: 8px 12px;
